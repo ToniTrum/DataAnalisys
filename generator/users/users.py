@@ -8,10 +8,10 @@ class User:
         self.age = age
 
     def __str__(self):
-        return f"Login: {self.login}\nEmail: {self.email}\nAge: {self.age}"
+        return f"Login: {self.login}; Email: {self.email}; Age: {self.age}"
     
     def __repr__(self):
-        return f"Login: {self.login}\nEmail: {self.email}\nAge: {self.age}"
+        return f"Login: {self.login}; Email: {self.email}; Age: {self.age}"
 
 def _generate_random_login(min_length: int = 5, max_length: int = 100) -> str:
     ALLOWED_CHARS = string.ascii_lowercase + string.digits + "_"
@@ -30,7 +30,14 @@ def _generate_random_email(name: str) -> str:
 def _generate_random_age() -> int:
     return random.randint(1, 150)
 
-def generate_random_user():
+def generate_random_user() -> User:
+    """
+    Возвращает случайного пользователя
+    
+    :return: Случайный пользователь
+    :rtype: User
+    """
+
     login = _generate_random_login()
     email = _generate_random_email(login)
     age = _generate_random_age()

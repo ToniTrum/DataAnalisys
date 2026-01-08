@@ -1,3 +1,3 @@
-from .products import get_products
+from .products import get_products, Product
 
-__all__ = ["get_products"]
+__all__ = ["get_products", "Product"]

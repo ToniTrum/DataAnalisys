@@ -19,12 +19,19 @@ class Product:
             raise ValueError("Invalid category")
         
     def __str__(self):
-        return f"Название: {self.name}\nОписание: {self.description}\nЦена: {self.price}\nКатегория: {self.category}."
+        return f"Название: {self.name}; Описание: {self.description}; Цена: {self.price}; Категория: {self.category}"
     
     def __repr__(self):
-        return f"Название: {self.name}\nОписание: {self.description}\nЦена: {self.price}\nКатегория: {self.category}."
+        return f"Название: {self.name}; Описание: {self.description}; Цена: {self.price}; Категория: {self.category}"
 
-def get_products():
+def get_products() -> list[Product]:
+    """
+    Возвращает список товаров
+    
+    :return: Список товаров
+    :rtype: list[Product]
+    """
+
     return [
         Product("Смарт-часы Xiaomi", "Умные часы с мониторингом активности", 5999.00, "Электроника"),
         Product("Портативная колонка JBL", "Bluetooth-колонка с мощным звуком", 8999.00, "Электроника"),
