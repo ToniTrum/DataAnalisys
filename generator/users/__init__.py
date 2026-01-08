@@ -1,3 +1,3 @@
-from .users import generate_random_user, User
+from .users import generate_random_user
 
-__all__ = ["generate_random_user", "User"]
+__all__ = ["generate_random_user"]
