@@ -10,15 +10,15 @@ CREATE TABLE IF NOT EXISTS categories (
 
 CREATE TABLE IF NOT EXISTS products (
     id SERIAL PRIMARY KEY,
-    login VARCHAR(100) NOT NULL,
+    name VARCHAR(100) NOT NULL,
     description TEXT,
-    price NUMERIC(10,2) NOT NULL
-    category_id INT REFERENCES categories(id) NOT NULL,
+    price NUMERIC(10,2) NOT NULL,
+    category_id INT REFERENCES categories(id) NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS users (
     id SERIAL PRIMARY KEY,
-    name VARCHAR(100) NOT NULL UNIQUE,
+    login VARCHAR(100) NOT NULL UNIQUE,
     email VARCHAR(255) NOT NULL UNIQUE,
     age INT CHECK (age > 0 AND age < 150)
 );

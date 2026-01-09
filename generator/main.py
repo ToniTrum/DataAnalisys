@@ -1,11 +1,11 @@
 import psycopg2
 import random
 
-from generator.categories import get_categories
-from generator.cities import get_cities
-from generator.products import get_products
-from generator.users import generate_random_user
-from generator.orders import generate_random_order
+from categories import get_categories
+from cities import get_cities
+from products import get_products
+from users import generate_random_user
+from orders import generate_random_order
 
 def _get_connection() -> psycopg2.extensions.connection:
     """
@@ -16,28 +16,12 @@ def _get_connection() -> psycopg2.extensions.connection:
     """
 
     return psycopg2.connect(
-        host="localhost",
-        port=5000,
+        host="postgres",
+        port=5432,
         dbname="shop",
         user="toni",
         password="1234"
     )
-
-def create_tables() -> None:
-    """
-    Создает таблицы
-    """
-
-    with open('init.sql', 'r') as f:
-        sql = f.read()
-
-    conn = _get_connection()
-    cur = conn.cursor()
-    cur.execute(sql)
-
-    conn.commit()
-    cur.close()
-    conn.close()
 
 def fill_table_cities() -> None:
     """
@@ -164,8 +148,6 @@ def fill_table_orders(count: int = 100) -> None:
 
 
 if __name__ == '__main__':
-    create_tables()
-
     fill_table_cities()
     fill_table_categories()
     fill_table_products()

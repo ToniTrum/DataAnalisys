@@ -1,9 +1,4 @@
-import sys
-import os
-
-sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
-
-from generator.categories import get_categories
+from categories import get_categories
 
 class Product:
     def __init__(self, name: str, description: str, price: float, category: str):
