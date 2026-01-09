@@ -54,7 +54,7 @@ def _generate_random_age() -> int:
     :return: Случайный возраст
     :rtype: int
     """
-    return random.randint(1, 150)
+    return random.randint(1, 149)
 
 def generate_random_user() -> User:
     """
