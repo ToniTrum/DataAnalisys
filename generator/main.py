@@ -151,5 +151,5 @@ if __name__ == '__main__':
     fill_table_cities()
     fill_table_categories()
     fill_table_products()
-    fill_table_users()
-    fill_table_orders()
+    fill_table_users(100_000)
+    fill_table_orders(1_000_000)

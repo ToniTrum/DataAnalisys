@@ -58,16 +58,6 @@ services:
       REDASH_SECRET_KEY: key
     command: worker
 
-  redash_scheduler:
-    image: redash/redash:latest
-    depends_on:
-      - redash_server
-    environment:
-      REDASH_DATABASE_URL: postgres://redash:redash@redash_postgres:5432/redash
-      REDASH_REDIS_URL: redis://redis:6379/0
-      REDASH_SECRET_KEY: key
-    command: scheduler
-
 volumes:
   pg_data:
   redash_pg_data:
