@@ -3,8 +3,8 @@ import extra_streamlit_components as stx
 from gotrue import Session, User
 from datetime import datetime, timedelta
 
-from src.Common.Validator import Validator
-from src.Models.UserModel import UserModel
+from Common.Validator import Validator
+from Models import UserModel
 
 
 class AuthController:
@@ -63,24 +63,26 @@ class AuthController:
         
         return False
 
-    def register(self, email: str, password: str) -> None:
+    def register(self, email: str, password: str) -> bool:
         if not Validator.is_valid_email(email):
             st.error("Введите корректную электронную почту")
-            return
+            return False
         
         if not Validator.is_valid_password(password):
             st.error("Введите корректный пароль. Пароль должен состоять исключительно из латинских букв, арабских цифр, нижнего подчёркивания и тире, также он должен быть не менее 8 символов.")
-            return
+            return False
 
         result = self.user.sign_up(email, password)
 
         if isinstance(result, Exception):
             st.error(f"Ошибка регистрации:\n{result}")
+            return False
         elif result.user:
             self._save_session_cookies(result.session)
             self._set_session_state(result.user)
 
             st.success("Регистрация успешна!")
+            return True
 
     def logout(self) -> None:
         self.user.sign_out()

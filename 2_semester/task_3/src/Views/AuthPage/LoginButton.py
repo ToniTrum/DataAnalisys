@@ -1,6 +1,6 @@
 import streamlit as st
 
-from src.Controllers.AuthController import AuthController
+from Controllers import AuthController
 
 
 def LoginButton(email: str, password: str, auth_controller: AuthController) -> None:
