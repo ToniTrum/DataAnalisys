@@ -3,7 +3,7 @@ import extra_streamlit_components as stx
 from gotrue import Session, User
 from datetime import datetime, timedelta
 
-from Common.Validator import Validator
+from Common import Validator
 from Models import UserModel
 
 

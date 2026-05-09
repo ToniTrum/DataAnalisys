@@ -1,7 +1,7 @@
 import streamlit as st
 
 from Models import UserModel, ChatModel, UserChatModel
-from Controllers import AuthController, ChatController
+from Controllers import AuthController, ChatController, LlmController
 from Views import AuthPage, ChatPage
 
 
@@ -27,9 +27,12 @@ class PageManager:
                 st.session_state.chat_model, 
                 st.session_state.user_chat_model
             )
+        if "llm_controller" not in st.session_state:
+            st.session_state.llm_controller = LlmController()
             
         self.auth_controller = st.session_state.auth_controller
         self.chat_controller = st.session_state.chat_controller
+        self.llm_controller = st.session_state.llm_controller
 
     def render(self) -> None:
         if not st.session_state.get("is_logged_in"):
@@ -37,6 +40,6 @@ class PageManager:
                 st.rerun()
 
         if st.session_state.get("is_logged_in"):
-            ChatPage(self.auth_controller, self.chat_controller)
+            ChatPage(self.auth_controller, self.chat_controller, self.llm_controller)
         else:
             AuthPage(self.auth_controller, self.chat_controller)

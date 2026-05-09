@@ -11,6 +11,9 @@ class ChatController:
     def get_user_chat_list(self, user_id: str) -> List[Dict[str, Any]]:
         return self.user_chat_model.get_user_chat_list(user_id)
     
+    def get_messages(self, chat_id: int) -> List[Dict[str, Any]]:
+        return self.chat_model.get_messages(chat_id)
+    
     def create_new_chat(self, user_id: str) -> int:
         chats = self.user_chat_model.find_user_chat_by_title(user_id)
         if chats:
@@ -22,3 +25,6 @@ class ChatController:
     
     def choose_chat(self, chat_id: int) -> None:
         st.session_state["current_chat_id"] = chat_id
+
+    def update_title(self, user_chat_id: int, new_title: str) -> None:
+        self.user_chat_model.update_chat_title(user_chat_id, new_title)
