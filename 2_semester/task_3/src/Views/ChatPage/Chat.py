@@ -1,6 +1,5 @@
 import streamlit as st
 import pandas as pd
-import time
 
 from Controllers import ChatController, LlmController
 from .UserMessage import UserMessage
@@ -22,6 +21,9 @@ def Chat(chat_id: int, title: str, chat_controller: ChatController, llm_controll
             role = message["role"]
             if role == "user":
                 UserMessage(message)
+            elif role == "assistant":
+                with st.chat_message("assistant"):
+                    st.markdown(message["content"])
 
     if not st.session_state.is_processing:
         with st.bottom:
@@ -39,7 +41,7 @@ def Chat(chat_id: int, title: str, chat_controller: ChatController, llm_controll
                     st.session_state.uploaded_file = uploaded_file
                     st.session_state.is_processing = True
                     st.session_state['file_key'] += 1
-                    
+
                     st.rerun()
 
     if st.session_state.is_processing:
@@ -61,21 +63,18 @@ def Chat(chat_id: int, title: str, chat_controller: ChatController, llm_controll
                 status_placeholder = st.empty()
                 with status_placeholder.status("Идёт анализ...", expanded=True) as status:
                     try:
-                        # response = llm_controller.generate_response(df, user_context)
-                        response = "Done"
-                        time.sleep(10)
-                        
+                        response = llm_controller.generate_response(df, user_context)
                         status.update(label="Анализ завершен!", state="complete", expanded=False)
                     except Exception as e:
                         status.update(label="Ошибка анализа", state="error")
-                        response = f"Произошла ошибка при работе агента:\n{str(e)}"
+                        response = f"Произошла ошибка при работе агента: {str(e)}"
 
                 st.markdown(response)
         messages.append({"role": "assistant", "content": response})
         chat_controller.update_messages(chat_id, messages)
 
-        st.session_state.is_processing = False
         st.session_state.prompt = None
         st.session_state.uploaded_file = None
+        st.session_state.is_processing = False
 
         st.rerun()
