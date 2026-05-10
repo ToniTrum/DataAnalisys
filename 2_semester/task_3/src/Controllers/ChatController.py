@@ -28,3 +28,6 @@ class ChatController:
 
     def update_title(self, user_chat_id: int, new_title: str) -> None:
         self.user_chat_model.update_chat_title(user_chat_id, new_title)
+
+    def update_messages(self, chat_id: int, messages: List[Dict[str, Any]]) -> None:
+        self.chat_model.update_messages(chat_id, messages)

@@ -1,58 +1,81 @@
 import streamlit as st
 import pandas as pd
+import time
 
 from Controllers import ChatController, LlmController
+from .UserMessage import UserMessage
 
 def Chat(chat_id: int, title: str, chat_controller: ChatController, llm_controller: LlmController) -> None:
-    messages = chat_controller.get_messages(chat_id)
     if 'file_key' not in st.session_state:
         st.session_state.file_key = 0
-    if "uploaded_file" not in st.session_state:
+    if 'is_processing' not in st.session_state:
+        st.session_state.is_processing = False
+    if 'uploaded_file' not in st.session_state:
         st.session_state.uploaded_file = None
+    if 'prompt' not in st.session_state:
+        st.session_state.prompt = None
 
+    messages = chat_controller.get_messages(chat_id)
     chat_container = st.container()
     with chat_container:
         for message in messages:
-            with st.chat_message(message["role"]):
-                st.markdown(message["content"])
+            role = message["role"]
+            if role == "user":
+                UserMessage(message)
 
-    with st.bottom:
-        st.divider()
-        uploaded_file = st.file_uploader(
-            "Прикрепите CSV файл для анализа",
-            type=["csv"],
-            key=st.session_state['file_key'],
-            accept_multiple_files=False
-        )
+    if not st.session_state.is_processing:
+        with st.bottom:
+            st.divider()
+            uploaded_file = st.file_uploader(
+                "Прикрепите CSV файл для анализа",
+                type=["csv"],
+                key=st.session_state['file_key'],
+                accept_multiple_files=False
+            )
 
-        if uploaded_file is not None:
-            if prompt := st.chat_input("Опишите, что хотите"):
-                st.session_state.uploaded_file = uploaded_file
-                
-                with chat_container:
-                    with st.chat_message("user"):
-                        st.markdown(prompt)
+            if uploaded_file is not None:
+                if prompt := st.chat_input("Опишите, что хотите"):                    
+                    st.session_state.prompt = prompt
+                    st.session_state.uploaded_file = uploaded_file
+                    st.session_state.is_processing = True
+                    st.session_state['file_key'] += 1
+                    
+                    st.rerun()
 
-                messages.append({"role": "user", "content": prompt})
+    if st.session_state.is_processing:
+        df = pd.read_csv(st.session_state.uploaded_file)
+        table_name = st.session_state.uploaded_file.name
+        preview_df = df.head(5).to_dict(orient="records")
+        user_context = st.session_state.prompt
 
-                df = pd.read_csv(uploaded_file)
-                df_json = df.to_json(orient='records') 
-                df_info = f"Вот данные из файла в формате JSON: {df_json}"
-
-                st.session_state['file_key'] += 1
-                st.rerun()
-
-    if st.session_state.get("is_generated"):
         with chat_container:
+            messages.append({
+                "role": "user", 
+                "table_name": table_name,
+                "table": preview_df,
+                "content": user_context,
+            })
+            UserMessage(messages[-1])
+
             with st.chat_message("assistant"):
-                response_placeholder = st.empty()
-                full_response = ""
+                status_placeholder = st.empty()
+                with status_placeholder.status("Идёт анализ...", expanded=True) as status:
+                    try:
+                        # response = llm_controller.generate_response(df, user_context)
+                        response = "Done"
+                        time.sleep(10)
+                        
+                        status.update(label="Анализ завершен!", state="complete", expanded=False)
+                    except Exception as e:
+                        status.update(label="Ошибка анализа", state="error")
+                        response = f"Произошла ошибка при работе агента:\n{str(e)}"
 
-                # for chunk in llm_controller.generate_response(messages, df_info):
-                #     full_response += chunk
-                #     response_placeholder.markdown(full_response + "▌")
+                st.markdown(response)
+        messages.append({"role": "assistant", "content": response})
+        chat_controller.update_messages(chat_id, messages)
 
-                response_placeholder.markdown(full_response)
+        st.session_state.is_processing = False
+        st.session_state.prompt = None
+        st.session_state.uploaded_file = None
 
-        messages.append({"role": "assistant", "content": full_response})
-        # chat_controller.update_messages(chat_id, messages)
+        st.rerun()
