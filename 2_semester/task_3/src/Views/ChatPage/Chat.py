@@ -2,9 +2,9 @@ import streamlit as st
 import pandas as pd
 
 from Controllers import ChatController, LlmController
-from .UserMessage import UserMessage
+from .ChatMessage import ChatMessage
 
-def Chat(chat_id: int, title: str, chat_controller: ChatController, llm_controller: LlmController) -> None:
+def Chat(chat_id: int, title: str, user_chat_id: int, chat_controller: ChatController, llm_controller: LlmController) -> None:
     if 'file_key' not in st.session_state:
         st.session_state.file_key = 0
     if 'is_processing' not in st.session_state:
@@ -18,12 +18,7 @@ def Chat(chat_id: int, title: str, chat_controller: ChatController, llm_controll
     chat_container = st.container()
     with chat_container:
         for message in messages:
-            role = message["role"]
-            if role == "user":
-                UserMessage(message)
-            elif role == "assistant":
-                with st.chat_message("assistant"):
-                    st.markdown(message["content"])
+            ChatMessage(message)
 
     if not st.session_state.is_processing:
         with st.bottom:
@@ -57,7 +52,11 @@ def Chat(chat_id: int, title: str, chat_controller: ChatController, llm_controll
                 "table": preview_df,
                 "content": user_context,
             })
-            UserMessage(messages[-1])
+            ChatMessage(messages[-1])
+
+            if len(messages) == 1:
+                title = llm_controller.generate_title(df, user_context)
+                chat_controller.update_title(user_chat_id, title)
 
             with st.chat_message("assistant"):
                 status_placeholder = st.empty()
@@ -69,8 +68,11 @@ def Chat(chat_id: int, title: str, chat_controller: ChatController, llm_controll
                         status.update(label="Ошибка анализа", state="error")
                         response = f"Произошла ошибка при работе агента: {str(e)}"
 
-                st.markdown(response)
-        messages.append({"role": "assistant", "content": response})
+        messages.append({
+            "role": "assistant", 
+            "content": response["content"],
+            "plots": response["plots"]
+        })
         chat_controller.update_messages(chat_id, messages)
 
         st.session_state.prompt = None

@@ -13,11 +13,17 @@ def ChatList(user_id: str, chat_controller: ChatController, llm_controller: LlmC
     
     chat_pages = []
     for chat in chats:
-        def create_page(chat_id: int, title: str, chat_controller: ChatController, llm_controller: LlmController) -> Chat:
-            return Chat(chat_id, title, chat_controller, llm_controller)
+        def create_page(
+                chat_id: int, title: str, user_chat_id: int, 
+                chat_controller: ChatController, llm_controller: LlmController
+            ) -> Chat:
+            return Chat(chat_id, title, user_chat_id, chat_controller, llm_controller)
 
         chat_pages.append(st.Page(
-            lambda chat=chat: create_page(chat["chat_id"], chat["title"], chat_controller, llm_controller),
+            lambda chat=chat: create_page(
+                chat["chat_id"], chat["title"], chat["id"],
+                chat_controller, llm_controller
+            ),
             title=chat["title"],
             url_path=f"/{chat['id']}",
         ))
