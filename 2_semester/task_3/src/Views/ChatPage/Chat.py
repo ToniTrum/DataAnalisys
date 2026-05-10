@@ -27,7 +27,7 @@ def Chat(chat_id: int, title: str, user_chat_id: int, chat_controller: ChatContr
                 "Прикрепите CSV файл для анализа",
                 type=["csv"],
                 key=st.session_state['file_key'],
-                accept_multiple_files=False
+                accept_multiple_files=False,
             )
 
             if uploaded_file is not None:

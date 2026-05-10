@@ -82,10 +82,10 @@ class LlmController:
 
     def generate_title(self, df: pd.DataFrame, user_context: str) -> str:
         columns_info = ", ".join(df.columns.tolist())
-        data_info = df.head(3).to_string(index=False)
+        data_info = df.head(5).to_string(index=False)
         
         prompt = f"""
-        На основе описания колонок датасета, первых 3-х строк данных и запроса пользователя, придумай короткое (2-6 слов) и 
+        На основе описания колонок датасета, первых 5-х строк данных и запроса пользователя, придумай короткое (2-6 слов) и 
         емкое название для этого чата.
         
         Колонки: {columns_info}
