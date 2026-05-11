@@ -7,7 +7,7 @@ from Common import Validator
 from Models import UserModel
 
 
-class AuthController:
+class AuthPresenter:
     def __init__(self, user: UserModel) -> None:
         self.user = user
         self.cookie_manager = stx.CookieManager()

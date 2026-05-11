@@ -1,10 +1,10 @@
 import streamlit as st
 
-from Controllers import AuthController
+from Presenter import AuthPresenter
 
 
-def LoginButton(email: str, password: str, auth_controller: AuthController) -> None:
+def LoginButton(email: str, password: str, auth_presenter: AuthPresenter) -> None:
     button = st.button("Войти")
 
     if button:
-        auth_controller.login(email, password)
+        auth_presenter.login(email, password)

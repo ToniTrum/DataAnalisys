@@ -1,11 +1,11 @@
 import streamlit as st
 
-from Controllers import AuthController, ChatController
+from Presenter import AuthPresenter, ChatPresenter
 from .LoginButton import LoginButton
 from .RegisterButton import RegisterButton
 
 
-def AuthPage(auth_controller: AuthController, chat_controller: ChatController) -> None:
+def AuthPage(auth_presenter: AuthPresenter, chat_presenter: ChatPresenter) -> None:
     _, main_column, _  = st.columns([1, 3, 1])
     with main_column:
         st.title("Авторизация")
@@ -14,6 +14,6 @@ def AuthPage(auth_controller: AuthController, chat_controller: ChatController) -
 
         left_column, right_column = st.columns(2)
         with left_column:
-            LoginButton(email, password, auth_controller)
+            LoginButton(email, password, auth_presenter)
         with right_column:
-            RegisterButton(email, password, auth_controller, chat_controller)
+            RegisterButton(email, password, auth_presenter)

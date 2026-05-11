@@ -3,7 +3,7 @@ import streamlit as st
 
 from Models import ChatModel, UserChatModel
 
-class ChatController:
+class ChatPresenter:
     def __init__(self, chat_model: ChatModel, user_chat_model: UserChatModel) -> None:
         self.chat_model = chat_model
         self.user_chat_model = user_chat_model

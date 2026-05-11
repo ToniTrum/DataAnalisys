@@ -1,12 +1,13 @@
 import streamlit as st
 
-from Controllers import AuthController, ChatController
+from Presenter import AuthPresenter, ChatPresenter
 from .NewChatButton import NewChatButton
 
 
-def Sidebar(user_id: int, auth_controller: AuthController, chat_controller: ChatController) -> None:
+def Sidebar(user_id: int, auth_presenter: AuthPresenter, chat_presenter: ChatPresenter) -> None:
     with st.sidebar:
         if st.button("Выход"):
-            auth_controller.logout()
+            auth_presenter.logout()
+            st.rerun()
 
-        NewChatButton(user_id, chat_controller)
+        NewChatButton(user_id, chat_presenter)

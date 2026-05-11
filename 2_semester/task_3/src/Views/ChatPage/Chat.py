@@ -1,10 +1,10 @@
 import streamlit as st
 import pandas as pd
 
-from Controllers import ChatController, LlmController
+from Presenter import ChatPresenter, LlmPresenter
 from .ChatMessage import ChatMessage
 
-def Chat(chat_id: int, title: str, user_chat_id: int, chat_controller: ChatController, llm_controller: LlmController) -> None:
+def Chat(chat_id: int, title: str, user_chat_id: int, chat_presenter: ChatPresenter, llm_presenter: LlmPresenter) -> None:
     if 'file_key' not in st.session_state:
         st.session_state.file_key = 0
     if 'is_processing' not in st.session_state:
@@ -14,7 +14,7 @@ def Chat(chat_id: int, title: str, user_chat_id: int, chat_controller: ChatContr
     if 'prompt' not in st.session_state:
         st.session_state.prompt = None
 
-    messages = chat_controller.get_messages(chat_id)
+    messages = chat_presenter.get_messages(chat_id)
     chat_container = st.container()
     with chat_container:
         for message in messages:
@@ -55,14 +55,14 @@ def Chat(chat_id: int, title: str, user_chat_id: int, chat_controller: ChatContr
             ChatMessage(messages[-1])
 
             if len(messages) == 1:
-                title = llm_controller.generate_title(df, user_context)
-                chat_controller.update_title(user_chat_id, title)
+                title = llm_presenter.generate_title(df, user_context)
+                chat_presenter.update_title(user_chat_id, title)
 
             with st.chat_message("assistant"):
                 status_placeholder = st.empty()
                 with status_placeholder.status("Идёт анализ...", expanded=True) as status:
                     try:
-                        response = llm_controller.generate_response(df, user_context)
+                        response = llm_presenter.generate_response(df, user_context)
                         status.update(label="Анализ завершен!", state="complete", expanded=False)
                     except Exception as e:
                         status.update(label="Ошибка анализа", state="error")
@@ -73,7 +73,7 @@ def Chat(chat_id: int, title: str, user_chat_id: int, chat_controller: ChatContr
             "content": response["content"],
             "plots": response["plots"]
         })
-        chat_controller.update_messages(chat_id, messages)
+        chat_presenter.update_messages(chat_id, messages)
 
         st.session_state.prompt = None
         st.session_state.uploaded_file = None

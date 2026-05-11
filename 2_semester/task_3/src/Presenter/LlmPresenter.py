@@ -71,7 +71,7 @@ class SafePythonAstREPLTool(PythonAstREPLTool):
             return False, f"Syntax error in generated code: {e}"
 
 
-class LlmController:
+class LlmPresenter:
     def __init__(self) -> None:
         self.llm = ChatOpenAI(
             model=st.secrets["OPEN_ROUTER_MODEL_ID"],
